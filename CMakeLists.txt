@@ -30,4 +30,7 @@ add_executable (Day01 ${DAY01_DIR}/main.cpp ${DAY01_DIR}/main.hpp)
 
 # Day  2
 set(DAY02_DIR ${SOURCE_DIR}/day02)
-add_executable (Day02 ${DAY02_DIR}/main.cpp ${DAY02_DIR}/main.hpp)
+add_executable (Day02 
+  ${DAY02_DIR}/main.cpp ${DAY02_DIR}/main.hpp
+  ${DAY02_DIR}/game.cpp ${DAY02_DIR}/game.hpp
+  ${DAY02_DIR}/set.cpp ${DAY02_DIR}/set.hpp)
