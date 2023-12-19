@@ -50,7 +50,23 @@ cSet::cSet(std::string& arg_stringSet) :
 
 bool cSet::IsPossible(const cSet& arg_configuration) const
 {
-	return redCubes <= arg_configuration.redCubes
-		&& greenCubes <= arg_configuration.greenCubes
-		&& blueCubes <= arg_configuration.blueCubes;
+	return
+		redCubes <= arg_configuration.redCubes &&
+		greenCubes <= arg_configuration.greenCubes &&
+		blueCubes <= arg_configuration.blueCubes;
+}
+
+void cSet::Max(cSet& arg_maximum) const
+{
+	arg_maximum.redCubes = std::max(arg_maximum.redCubes, this->redCubes);
+	arg_maximum.greenCubes = std::max(arg_maximum.greenCubes, this->greenCubes);
+	arg_maximum.blueCubes = std::max(arg_maximum.blueCubes, this->blueCubes);
+}
+
+uint32_t cSet::Mul(void) const
+{
+	return
+		static_cast<uint32_t>(redCubes) *
+		static_cast<uint32_t>(greenCubes) *
+		static_cast<uint32_t>(blueCubes);
 }

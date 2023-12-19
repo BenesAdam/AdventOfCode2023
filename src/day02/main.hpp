@@ -6,3 +6,4 @@
 
 void ParseGames(std::list<cGame>& arg_games, const std::string& arg_path);
 uint32_t SumOfIdentifiers(const std::list<cGame>& arg_games);
+uint32_t SumOfPower(const std::list<cGame>& arg_games);

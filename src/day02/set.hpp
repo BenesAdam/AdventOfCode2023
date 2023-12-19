@@ -9,6 +9,8 @@ struct cSet
 	cSet(std::string& arg_stringSet);
 
 	bool IsPossible(const cSet& arg_configuration) const;
+	void Max(cSet& arg_maximum) const;
+	uint32_t Mul(void) const;
 
 	enum eColor
 	{

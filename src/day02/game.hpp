@@ -11,6 +11,7 @@ public:
 
 	uint32_t GetIdentifier(void) const;
 	bool IsPossible(const cSet& arg_configuration) const;
+	uint32_t GetPower(void) const;
 
 private:
 	void ParseLine(const std::string& arg_line);

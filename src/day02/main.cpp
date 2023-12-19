@@ -11,6 +11,7 @@ int main()
 	ParseGames(games, SOURCE_DIR"/day02/input");
 
 	std::cout << "Sum of IDs: " << SumOfIdentifiers(games) << std::endl;
+	std::cout << "Sum of powers: " << SumOfPower(games) << std::endl;
 
 	return 0;
 }
@@ -46,6 +47,18 @@ uint32_t SumOfIdentifiers(const std::list<cGame>& arg_games)
 		{
 			sum += game.GetIdentifier();
 		}
+	}
+
+	return sum;
+}
+
+uint32_t SumOfPower(const std::list<cGame>& arg_games)
+{
+	uint32_t sum = 0U;
+
+	for (auto& game : arg_games)
+	{
+		sum += game.GetPower();
 	}
 
 	return sum;

@@ -56,3 +56,15 @@ bool cGame::IsPossible(const cSet& arg_configuration) const
 
 	return true;
 }
+
+uint32_t cGame::GetPower(void) const
+{
+	cSet maximum;
+
+	for (auto& set : sets)
+	{
+		set.Max(maximum);
+	}
+
+	return maximum.Mul();
+}
