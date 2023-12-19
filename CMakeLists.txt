@@ -10,7 +10,7 @@
 #                                                                             #
 #=============================================================================#
 
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.12)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -20,7 +20,9 @@ endif()
 
 # General settings
 project ("AdventOfCode2023")
-set (SOURCE_DIR src)
+set (SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+
+add_compile_definitions(SOURCE_DIR="${SOURCE_DIR}")
 
 # Day  1
 set(DAY01_DIR ${SOURCE_DIR}/day01)
