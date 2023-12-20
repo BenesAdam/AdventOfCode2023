@@ -46,4 +46,5 @@ add_executable (Day03
 set(DAY03_DIR ${SOURCE_DIR}/day04)
 add_executable (Day04 
   ${DAY03_DIR}/main.cpp
-  ${DAY03_DIR}/card.cpp ${DAY03_DIR}/card.hpp)
+  ${DAY03_DIR}/scratchcard.cpp ${DAY03_DIR}/scratchcard.hpp
+  ${DAY03_DIR}/scratchcard_pile.cpp ${DAY03_DIR}/scratchcard_pile.hpp)

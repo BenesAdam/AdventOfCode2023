@@ -1,12 +1,13 @@
 ﻿#include <iostream>
-#include "card.hpp"
+#include "scratchcard_pile.hpp"
 
 int main(int argc, char* argv[])
 {
-	//std::list<cCard> cards = cCard::ParseCards(SOURCE_DIR"/day04/test1");
-	std::list<cCard> cards = cCard::ParseCards(SOURCE_DIR"/day04/input");
+	//cScratchcardPile pile(SOURCE_DIR"/day04/test1");
+	cScratchcardPile pile(SOURCE_DIR"/day04/input");
 
-  std::cout << "Total point worth: " << cCard::GetTotalWorth(cards) << std::endl;
+  std::cout << "Total point worth: " << pile.GetTotalWorth() << std::endl;
+  std::cout << "Number of cards in pile: " << pile.GetTotalNumberOfCards() << std::endl;
 
 	return 0;
 }

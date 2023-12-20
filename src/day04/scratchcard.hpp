@@ -4,16 +4,15 @@
 #include <list>
 #include <unordered_set>
 
-class cCard
+class cScratchcard
 {
 public:
-	cCard(const std::string& arg_line);
+	cScratchcard(void);
+	cScratchcard(const std::string& arg_line);
 
-	static std::list<cCard> ParseCards(const std::string& arg_path);
-	static uint32_t GetTotalWorth(const std::list<cCard>& arg_cards);
-
-	void Print(void) const;
 	uint32_t GetWorth(void) const;
+	uint16_t GetNumberOfMatchedNumbers(void) const;
+	uint16_t GetIdentifier(void) const;
 
 private:
 	std::list<uint8_t> ParseNumbers(const std::string& arg_numbers) const;
