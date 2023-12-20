@@ -3,6 +3,10 @@
 
 #include "engine_schematic.hpp"
 
+//-----------------------------------------------------------------------------
+// Constructor with parsing of input file
+//-----------------------------------------------------------------------------
+
 cEngineSchematic::cEngineSchematic(const std::string& arg_path) :
 	size(0U),
 	data()
@@ -27,22 +31,14 @@ cEngineSchematic::cEngineSchematic(const std::string& arg_path) :
 	file.close();
 }
 
-void cEngineSchematic::Print(void) const
-{
-	for (uint16_t i = 0U; i < size; i++)
-	{
-		for (uint16_t j = 0U; j < size; j++)
-		{
-			std::cout << Get(i, j);
-		}
-		std::cout << std::endl;
-	}
-}
+//-----------------------------------------------------------------------------
+// Get parts
+//-----------------------------------------------------------------------------
 
 uint32_t cEngineSchematic::GetSumOfParts(void)
 {
 	uint32_t sum = 0U;
-	std::list<uint16_t> parts = GetParts();
+	std::list<uint16_t> parts = GetAllParts();
 
 	for (auto part : parts)
 	{
@@ -52,7 +48,7 @@ uint32_t cEngineSchematic::GetSumOfParts(void)
 	return sum;
 }
 
-std::list<uint16_t> cEngineSchematic::GetParts(void)
+std::list<uint16_t> cEngineSchematic::GetAllParts(void)
 {
 	std::list<uint16_t> parts;
 
@@ -67,7 +63,7 @@ std::list<uint16_t> cEngineSchematic::GetParts(void)
 		{
 			uint16_t i, j;
 			GetIndex(index, i, j);
-			AskNeighboursForParts(parts, i, j);
+			SearchAreaForParts(parts, i, j);
 		}
 	}
 
@@ -77,7 +73,7 @@ std::list<uint16_t> cEngineSchematic::GetParts(void)
 	return parts;
 }
 
-void cEngineSchematic::AskNeighboursForParts(std::list<uint16_t>& arg_parts, const uint16_t arg_i, const uint16_t arg_j)
+void cEngineSchematic::SearchAreaForParts(std::list<uint16_t>& arg_parts, const uint16_t arg_i, const uint16_t arg_j)
 {
 	const int8_t offset = 1;
 	for (int8_t iOffset = -offset; iOffset <= offset; iOffset++)
@@ -99,24 +95,21 @@ void cEngineSchematic::AskNeighboursForParts(std::list<uint16_t>& arg_parts, con
 
 			if (isdigit(neighbour))
 			{
-				uint16_t part = ScanPartNumber(i, j, true);
+				uint16_t part = ScanPartNumber(i, j);
 				arg_parts.push_back(part);
 			}
 		}
 	}
 }
 
-uint16_t cEngineSchematic::ScanPartNumber(const uint16_t arg_i, const uint16_t arg_j, const bool arg_pickAndRemove)
+uint16_t cEngineSchematic::ScanPartNumber(const uint16_t arg_i, const uint16_t arg_j)
 {
 	std::string partString = "";
 
 	// Center
 	const uint16_t centerIndex = GetIndex(arg_i, arg_j);
 	partString += data[centerIndex];
-	if (arg_pickAndRemove)
-	{
-		data[centerIndex] = cEngineSchematic::BlankSpot;
-	}
+	data[centerIndex] = cEngineSchematic::BlankSpot;
 
 	// Prefix
 	int32_t j = arg_j - 1;
@@ -129,11 +122,7 @@ uint16_t cEngineSchematic::ScanPartNumber(const uint16_t arg_i, const uint16_t a
 			break;
 		}
 
-		if (arg_pickAndRemove)
-		{
-			data[index] = cEngineSchematic::BlankSpot;
-		}
-
+		data[index] = cEngineSchematic::BlankSpot;
 		partString = c + partString;
 		j--;
 	}
@@ -149,11 +138,7 @@ uint16_t cEngineSchematic::ScanPartNumber(const uint16_t arg_i, const uint16_t a
 			break;
 		}
 
-		if (arg_pickAndRemove)
-		{
-			data[index] = cEngineSchematic::BlankSpot;
-		}
-
+		data[index] = cEngineSchematic::BlankSpot;
 		partString = partString + c;
 		j++;
 	}
@@ -161,6 +146,59 @@ uint16_t cEngineSchematic::ScanPartNumber(const uint16_t arg_i, const uint16_t a
 	// Result
 	return std::stoi(partString);
 }
+
+//-----------------------------------------------------------------------------
+// Get sum of gear ratio
+//-----------------------------------------------------------------------------
+
+uint32_t cEngineSchematic::GetSumOfGearRatio(void)
+{
+	uint32_t sum = 0U;
+
+	for (uint16_t index = 0U; index < (size * size); index++)
+	{
+		const char c = data[index];
+		if (c == cEngineSchematic::Gear)
+		{
+			uint16_t i, j;
+			GetIndex(index, i, j);
+
+			sum += GetGearRatio(i, j);
+		}
+	}
+
+	return sum;
+}
+
+uint32_t cEngineSchematic::GetGearRatio(const uint16_t arg_i, const uint16_t arg_j)
+{
+	uint32_t gearRatio = 0U;
+
+	// Backup
+	std::string backup = data;
+
+	// Get adjacent parts
+	std::list<uint16_t> parts;
+	SearchAreaForParts(parts, arg_i, arg_j);
+
+	// Establish gear ratio only if current position is a gear
+	if (parts.size() == cEngineSchematic::GearAdjacentParts)
+	{
+		for (auto& part : parts)
+		{
+			gearRatio = (gearRatio == 0U) ? part : (gearRatio * part);
+		}
+	}
+
+	// Restore
+	data = backup;
+
+	return gearRatio;
+}
+
+//-----------------------------------------------------------------------------
+// Tranformation of index to 2D position and visa versa.
+//-----------------------------------------------------------------------------
 
 uint8_t cEngineSchematic::Get(const uint16_t arg_i, const uint16_t arg_j) const
 {

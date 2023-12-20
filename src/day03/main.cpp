@@ -10,6 +10,7 @@ int main(int argc, char* argv[])
 	cEngineSchematic schematic(SOURCE_DIR"/day03/input");
 
 	std::cout << "Sum of parts is: " << schematic.GetSumOfParts() << std::endl;
+	std::cout << "Sum of gear ratio is: " << schematic.GetSumOfGearRatio() << std::endl;
 
 	return 0;
 }
