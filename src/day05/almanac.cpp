@@ -62,13 +62,29 @@ uint64_t cAlmanac::GetLocation(const uint64_t arg_seed) const
 	return value;
 }
 
-uint64_t cAlmanac::GetMinimalLocation(void) const
+uint64_t cAlmanac::GetMinimalLocation(const bool arg_seedsAreRanges) const
 {
 	uint64_t minimum = UINT64_MAX;
 
-	for (uint64_t seed : seeds)
+	if (arg_seedsAreRanges)
 	{
-		minimum = std::min(minimum, GetLocation(seed));
+		for (uint16_t i = 0U; i < seeds.size(); i += 2U)
+		{
+			const uint64_t start = seeds[i];
+			const uint64_t length = seeds[i + 1U];
+
+			for (uint64_t seed = start; seed < (start + length - 1U); seed++)
+			{
+				minimum = std::min(minimum, GetLocation(seed));
+			}
+		}
+	}
+	else
+	{
+		for (uint64_t seed : seeds)
+		{
+			minimum = std::min(minimum, GetLocation(seed));
+		}
 	}
 
 	return minimum;
