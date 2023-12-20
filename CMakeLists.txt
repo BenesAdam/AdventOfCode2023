@@ -41,3 +41,9 @@ set(DAY03_DIR ${SOURCE_DIR}/day03)
 add_executable (Day03 
   ${DAY03_DIR}/main.cpp
   ${DAY03_DIR}/engine_schematic.cpp ${DAY03_DIR}/engine_schematic.hpp)
+
+# Day  4
+set(DAY03_DIR ${SOURCE_DIR}/day04)
+add_executable (Day04 
+  ${DAY03_DIR}/main.cpp
+  ${DAY03_DIR}/card.cpp ${DAY03_DIR}/card.hpp)
