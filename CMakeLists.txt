@@ -55,3 +55,9 @@ add_executable (Day05
   ${DAY05_DIR}/main.cpp
   ${DAY05_DIR}/almanac.cpp ${DAY05_DIR}/almanac.hpp
   ${DAY05_DIR}/map.cpp ${DAY05_DIR}/map.hpp)
+
+# Day  6
+set(DAY06_DIR ${SOURCE_DIR}/day06)
+add_executable (Day06 
+  ${DAY06_DIR}/main.cpp
+  ${DAY06_DIR}/race.cpp ${DAY06_DIR}/race.hpp)

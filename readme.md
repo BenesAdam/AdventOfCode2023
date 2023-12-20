@@ -29,19 +29,3 @@ The repository is organized by day, with each day having its own dedicated direc
 Advent of Code is an annual coding event created by [Eric Wastl](http://was.tl/). For more information and to participate in the challenges, visit the [Advent of Code website](https://adventofcode.com/).
 
 Happy coding and enjoy solving the puzzles!
-
-## Progress
-
-- [x] Day 1
-- [x] Day 2
-- [x] Day 3
-- [ ] Day 4
-- [ ] Day 5
-- [ ] Day 5
-- [ ] Day 6
-- [ ] Day 7
-- [ ] Day 8
-- [ ] Day 9
-- [ ] Day 10
-- [ ] Day 11
-...
