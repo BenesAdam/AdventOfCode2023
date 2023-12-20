@@ -25,6 +25,8 @@ cScratchcardPile::cScratchcardPile(const std::string& arg_path) :
 		cards.emplace(identifier, card);
 		cardsToProcess.push(identifier);
 	}
+
+	file.close();
 }
 
 uint32_t cScratchcardPile::GetTotalWorth(void) const

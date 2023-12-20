@@ -43,8 +43,15 @@ add_executable (Day03
   ${DAY03_DIR}/engine_schematic.cpp ${DAY03_DIR}/engine_schematic.hpp)
 
 # Day  4
-set(DAY03_DIR ${SOURCE_DIR}/day04)
+set(DAY04_DIR ${SOURCE_DIR}/day04)
 add_executable (Day04 
-  ${DAY03_DIR}/main.cpp
-  ${DAY03_DIR}/scratchcard.cpp ${DAY03_DIR}/scratchcard.hpp
-  ${DAY03_DIR}/scratchcard_pile.cpp ${DAY03_DIR}/scratchcard_pile.hpp)
+  ${DAY04_DIR}/main.cpp
+  ${DAY04_DIR}/scratchcard.cpp ${DAY04_DIR}/scratchcard.hpp
+  ${DAY04_DIR}/scratchcard_pile.cpp ${DAY04_DIR}/scratchcard_pile.hpp)
+
+# Day  5
+set(DAY05_DIR ${SOURCE_DIR}/day05)
+add_executable (Day05 
+  ${DAY05_DIR}/main.cpp
+  ${DAY05_DIR}/almanac.cpp ${DAY05_DIR}/almanac.hpp
+  ${DAY05_DIR}/map.cpp ${DAY05_DIR}/map.hpp)
