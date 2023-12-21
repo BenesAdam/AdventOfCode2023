@@ -20,4 +20,3 @@ private:
 	cHand hand;
 	uint32_t bet;
 };
-

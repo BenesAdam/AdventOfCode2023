@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <array>
 
 class cHand
 {
@@ -22,7 +22,9 @@ public:
 
 	int8_t Compare(const cHand& other) const;
 
-	static const std::map<char, uint8_t> cardMapping;
+	static void EnableJokers(void);
+	static void DisableJokers(void);
+
 	static const uint8_t NumberOfCards = 5U;
 
 	// operators
@@ -34,8 +36,13 @@ public:
 	bool operator>=(const cHand& other) const;
 
 private:
-	eType GetType(void) const;
+	uint8_t ConvertSymbolToNumber(const char arg_symbol) const;
+	eType DetermineType(void) const;
+	void ComputeTupleCount(std::array<uint8_t, 6U>& arg_tupleCount, uint8_t& arg_jokers) const;
+	bool HasNOfAKind(const int8_t arg_n, std::array<uint8_t, 6U>& arg_tupleCount, uint8_t& arg_jokers) const;
 
+	static bool JokersEnabledGlobal;
 	uint8_t cards[NumberOfCards];
 	eType type;
+	bool jokersEnabled;
 };
