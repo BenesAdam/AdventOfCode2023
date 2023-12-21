@@ -82,3 +82,12 @@ add_executable (Day07
   ${DAY07_DIR}/main.cpp
   ${DAY07_DIR}/pocketbet.cpp ${DAY07_DIR}/pocketbet.hpp
   ${DAY07_DIR}/hand.cpp ${DAY07_DIR}/hand.hpp)
+
+#=============================================================================#
+# Day  8                                                                      #
+#=============================================================================#
+set(DAY08_DIR ${SOURCE_DIR}/day08)
+add_executable (Day08 
+  ${DAY08_DIR}/main.cpp
+  ${DAY08_DIR}/map.cpp ${DAY08_DIR}/map.hpp
+  ${DAY08_DIR}/node.cpp ${DAY08_DIR}/node.hpp)
