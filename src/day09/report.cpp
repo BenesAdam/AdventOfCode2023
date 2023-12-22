@@ -31,21 +31,25 @@ std::list<cReport> cReport::Parse(const std::string& arg_path)
 
 cReport::cReport(const std::string& arg_line) :
 	history(),
-	increments()
+	increments(),
+	decrements()
 {
 	int64_t number;
 	std::stringstream ss(arg_line);
 
+	std::vector<int64_t> firstLayer;
+
 	while (ss >> number)
 	{
 		history.push_back(number);
+		firstLayer.push_back(number);
 	}
 
 	std::vector<std::vector<int64_t>> layers;
-	layers.push_back(history);
+	layers.push_back(firstLayer);
 	ComputeNextLayers(layers, 1U);
 	
-	ComputeIncrements(layers);
+	ComputeSteps(layers);
 }
 
 void cReport::ComputeNextLayers(std::vector<std::vector<int64_t>>& arg_layers, const uint16_t arg_sequenceIndex) const
@@ -74,29 +78,33 @@ void cReport::ComputeNextLayers(std::vector<std::vector<int64_t>>& arg_layers, c
 	}
 }
 
-void cReport::ComputeIncrements(std::vector<std::vector<int64_t>>& layers)
+void cReport::ComputeSteps(std::vector<std::vector<int64_t>>& layers)
 {
 	for (auto it = layers.rbegin(); it != layers.rend(); it++)
 	{
 		std::vector<int64_t>& layer = *it;
+
 		int64_t lastValue = layer[layer.size() - 1U];
 		increments.push_back(lastValue);
+
+		int64_t firstValue = layer[0U];
+		decrements.push_back(firstValue);
 	}
 }
 
-int64_t cReport::SumOfExtrapolatedValues(std::list<cReport>& arg_reports)
+int64_t cReport::SumOfExtrapolatedValues(std::list<cReport>& arg_reports, const bool arg_extrapolateBackwards)
 {
 	int64_t sum = 0U;
 
 	for (auto& report : arg_reports)
 	{
-		sum += report.ComputeNextValue();
+		sum += (arg_extrapolateBackwards) ? report.ExtrapolateBackwards() : report.ExtrapolateForwards();
 	}
 
 	return sum;
 }
 
-int64_t cReport::ComputeNextValue(void)
+int64_t cReport::ExtrapolateForwards(void)
 {
 	for (uint16_t i = 1U; i < increments.size(); i++)
 	{
@@ -105,6 +113,19 @@ int64_t cReport::ComputeNextValue(void)
 
 	int64_t value = increments[increments.size() - 1U];
 	history.push_back(value);
+
+	return value;
+}
+
+int64_t cReport::ExtrapolateBackwards(void)
+{
+	for (uint16_t i = 1U; i < decrements.size(); i++)
+	{
+		decrements[i] = decrements[i] - decrements[i - 1U];
+	}
+
+	int64_t value = decrements[decrements.size() - 1U];
+	history.push_front(value);
 
 	return value;
 }
