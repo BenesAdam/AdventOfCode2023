@@ -20,4 +20,3 @@ private:
 	const cNode* left;
 	const cNode* right;
 };
-
