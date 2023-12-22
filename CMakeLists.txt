@@ -92,3 +92,11 @@ add_executable (Day08
   ${DAY08_DIR}/numeric.hpp
   ${DAY08_DIR}/map.cpp ${DAY08_DIR}/map.hpp
   ${DAY08_DIR}/node.cpp ${DAY08_DIR}/node.hpp)
+
+#=============================================================================#
+# Day  9                                                                      #
+#=============================================================================#
+set(DAY09_DIR ${SOURCE_DIR}/day09)
+add_executable (Day09 
+  ${DAY09_DIR}/main.cpp
+  ${DAY09_DIR}/report.cpp ${DAY09_DIR}/report.hpp)
