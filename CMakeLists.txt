@@ -100,3 +100,11 @@ set(DAY09_DIR ${SOURCE_DIR}/day09)
 add_executable (Day09 
   ${DAY09_DIR}/main.cpp
   ${DAY09_DIR}/report.cpp ${DAY09_DIR}/report.hpp)
+
+#=============================================================================#
+# Day 10                                                                      #
+#=============================================================================#
+set(DAY10_DIR ${SOURCE_DIR}/day10)
+add_executable (Day10 
+  ${DAY10_DIR}/main.cpp
+  ${DAY10_DIR}/piping.cpp ${DAY10_DIR}/piping.hpp)
