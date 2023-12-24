@@ -107,4 +107,5 @@ add_executable (Day09
 set(DAY10_DIR ${SOURCE_DIR}/day10)
 add_executable (Day10 
   ${DAY10_DIR}/main.cpp
-  ${DAY10_DIR}/piping.cpp ${DAY10_DIR}/piping.hpp)
+  ${DAY10_DIR}/piping.cpp ${DAY10_DIR}/piping.hpp
+  ${DAY10_DIR}/matrix.cpp ${DAY10_DIR}/matrix.hpp)
