@@ -117,3 +117,11 @@ set(DAY11_DIR ${SOURCE_DIR}/day11)
 add_executable (Day11 
   ${DAY11_DIR}/main.cpp
   ${DAY11_DIR}/image.cpp ${DAY11_DIR}/image.hpp)
+
+#=============================================================================#
+# Day 12                                                                      #
+#=============================================================================#
+set(DAY12_DIR ${SOURCE_DIR}/day12)
+add_executable (Day12 
+  ${DAY12_DIR}/main.cpp
+  ${DAY12_DIR}/condition_record.cpp ${DAY12_DIR}/condition_record.hpp)
