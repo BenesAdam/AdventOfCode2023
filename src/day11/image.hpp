@@ -9,27 +9,21 @@ class cImage
 {
 public:
 	cImage(void);
-	cImage(const cImage* const arg_image);
-	cImage(const std::string& arg_path);
+	cImage(const std::string& arg_path, const uint64_t arg_expansion = 2U);
 
-	static cImage GetExpanded(const cImage& arg_image);
-
-	uint32_t SumOfDistances(void);
-	uint32_t SumOfExpandedDistances(void);
-
-	void Print(void) const;
-	void PrintPositions(void) const;
+	uint64_t SumOfDistances(void);
 
 private:
 	void ParseFile(const std::string& arg_path);
-	void RecalculatePositions(void);
+	void CalculatePositions(void);
 
-	void Expand(void);
+	void ExpandPositions(void);
 	void ExpandVertical(void);
 	void ExpandHorizontal(void);
 
 	uint16_t width;
 	uint16_t height;
 	std::vector<std::string> data;
-	std::vector<sPosition<uint16_t>> positions;
+	std::vector<sPosition<uint64_t>> positions;
+	uint64_t expansion;
 };

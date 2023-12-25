@@ -8,31 +8,18 @@ cImage::cImage(void) :
 	width(0U),
 	height(0U),
 	data(),
-	positions()
+	positions(),
+	expansion(0U)
 {
 }
 
-cImage::cImage(const cImage* const arg_image)
-{
-	width = arg_image->width;
-	height = arg_image->height;
-
-	for (auto& row : arg_image->data)
-	{
-		data.push_back(row);
-	}
-
-	for (auto& position : positions)
-	{
-		positions.push_back(position);
-	}
-}
-
-cImage::cImage(const std::string& arg_path) :
+cImage::cImage(const std::string& arg_path, const uint64_t arg_expansion) :
 	cImage()
 {
+	expansion = (arg_expansion > 0U) ? (arg_expansion - 1U) : 0U;
 	ParseFile(arg_path);
-	RecalculatePositions();
+	CalculatePositions();
+	ExpandPositions();
 }
 
 void cImage::ParseFile(const std::string& arg_path)
@@ -63,7 +50,7 @@ void cImage::ParseFile(const std::string& arg_path)
 	file.close();
 }
 
-void cImage::RecalculatePositions(void)
+void cImage::CalculatePositions(void)
 {
 	positions.clear();
 
@@ -73,21 +60,13 @@ void cImage::RecalculatePositions(void)
 		{
 			if (data[i][j] == '#')
 			{
-				positions.push_back(sPosition<uint16_t>(i, j));
+				positions.push_back(sPosition<uint64_t>(i, j));
 			}
 		}
 	}
 }
 
-cImage cImage::GetExpanded(const cImage& arg_image)
-{
-	cImage expanded(&arg_image);
-	expanded.Expand();
-	expanded.RecalculatePositions();
-	return expanded;
-}
-
-void cImage::Expand(void)
+void cImage::ExpandPositions(void)
 {
 	ExpandVertical();
 	ExpandHorizontal();
@@ -117,14 +96,23 @@ void cImage::ExpandVertical(void)
 	}
 
 	// Expand these rows
+	std::vector<sPosition<uint64_t>> expandedPositions(positions);
+
 	while (!rowsToExpand.empty())
 	{
 		uint16_t row = rowsToExpand.top();
 		rowsToExpand.pop();
 
-		data.insert(data.begin() + row, std::string(width, '.'));
-		height++;
+		for (uint16_t i = 0U; i < positions.size(); i++)
+		{
+			if (positions.at(i).i >= row)
+			{
+				expandedPositions.at(i).i += expansion;
+			}
+		}
 	}
+
+	positions = expandedPositions;
 }
 
 void cImage::ExpandHorizontal(void)
@@ -151,56 +139,39 @@ void cImage::ExpandHorizontal(void)
 	}
 
 	// Expand these columns
+	std::vector<sPosition<uint64_t>> expandedPositions(positions);
+
 	while (!columnsToExpand.empty())
 	{
 		uint16_t column = columnsToExpand.top();
 		columnsToExpand.pop();
 
-		for (auto& row : data)
+		for (uint16_t i = 0U; i < positions.size(); i++)
 		{
-			row.insert(row.begin() + column, '.');
+			if (positions.at(i).j >= column)
+			{
+				expandedPositions.at(i).j += expansion;
+			}
 		}
-		width++;
 	}
+
+	positions = expandedPositions;
 }
 
-uint32_t cImage::SumOfDistances(void)
+uint64_t cImage::SumOfDistances(void)
 {
-	uint32_t sum = 0U;
+	uint64_t sum = 0U;
 
 	for (uint16_t i = 0U; i < positions.size(); i++)
 	{
 		for (uint16_t j = (i + 1U); j < positions.size(); j++)
 		{
-			sPosition<uint16_t>& position1 = positions.at(i);
-			sPosition<uint16_t>& position2 = positions.at(j);
-			uint32_t distance = static_cast<uint32_t>(ManhattanDistance<uint16_t, int32_t>(position1, position2));
+			sPosition<uint64_t>& position1 = positions.at(i);
+			sPosition<uint64_t>& position2 = positions.at(j);
+			uint64_t distance = position1.ManhattanDistance(position2);
 			sum += distance;
 		}
 	}
 
 	return sum;
-}
-
-uint32_t cImage::SumOfExpandedDistances(void)
-{
-	cImage expanded = cImage::GetExpanded(*this);
-	return expanded.SumOfDistances();
-}
-
-void cImage::Print(void) const
-{
-	for (uint16_t i = 0U; i < height; i++)
-	{
-		std::cout << data[i] << std::endl;
-	}
-}
-
-void cImage::PrintPositions(void) const
-{
-	for (auto& position : positions)
-	{
-		std::cout << position << " ";
-	}
-	std::cout << std::endl;
 }

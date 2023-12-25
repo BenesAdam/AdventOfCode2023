@@ -22,24 +22,18 @@ struct sPosition
 	sPosition<T>& operator*=(T arg_value);
 	sPosition<T>& operator/=(T arg_value);
 
-	sPosition<T> operator+(const sPosition& arg_other);
-	sPosition<T> operator-(const sPosition& arg_other);
-	sPosition<T> operator*(const sPosition& arg_other);
-	sPosition<T> operator/(const sPosition& arg_other);
+	sPosition<T> operator+(const sPosition<T>& arg_other);
+	sPosition<T> operator-(const sPosition<T>& arg_other);
+	sPosition<T> operator*(const sPosition<T>& arg_other);
+	sPosition<T> operator/(const sPosition<T>& arg_other);
 
-	sPosition<T>& operator+=(const sPosition& arg_other);
-	sPosition<T>& operator-=(const sPosition& arg_other);
-	sPosition<T>& operator*=(const sPosition& arg_other);
-	sPosition<T>& operator/=(const sPosition& arg_other);
+	sPosition<T>& operator+=(const sPosition<T>& arg_other);
+	sPosition<T>& operator-=(const sPosition<T>& arg_other);
+	sPosition<T>& operator*=(const sPosition<T>& arg_other);
+	sPosition<T>& operator/=(const sPosition<T>& arg_other);
 
-	T GetManhattanDistance(const sPosition& arg_other);
+	T ManhattanDistance(const sPosition<T>& arg_other);
 };
-
-namespace nsNumeric
-{
-	template<typename T, typename S>
-	T ManhattanDistance(const sPosition<T>& arg_pos1, const sPosition<T>& arg_pos2);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -209,9 +203,14 @@ inline sPosition<T>& sPosition<T>::operator/=(const sPosition& arg_other)
 }
 
 template<typename T>
-inline T sPosition<T>::GetManhattanDistance(const sPosition& arg_other)
+inline T sPosition<T>::ManhattanDistance(const sPosition<T>& arg_other)
 {
-	return 
+	T x1 = std::max(this->i, arg_other.i);
+	T x2 = std::min(this->i, arg_other.i);
+	T y1 = std::max(this->j, arg_other.j);
+	T y2 = std::min(this->j, arg_other.j);
+
+	return (x1 - x2) + (y1 - y2);
 }
 
 template<typename T>
@@ -219,15 +218,4 @@ std::ostream& operator<<(std::ostream& o, const sPosition<T>& a)
 {
 	o << "[" << a.i << ", " << a.j << "]";
 	return o;
-}
-
-template<typename T, typename S>
-T ManhattanDistance(const sPosition<T>& arg_pos1, const sPosition<T>& arg_pos2)
-{
-	S x1 = static_cast<S>(arg_pos1.i);
-	S y1 = static_cast<S>(arg_pos1.j);
-	S x2 = static_cast<S>(arg_pos2.i);
-	S y2 = static_cast<S>(arg_pos2.j);
-
-	return static_cast<T>(abs(x1 - x2) + abs(y1 - y2));
 }
