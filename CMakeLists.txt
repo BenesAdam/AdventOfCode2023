@@ -116,6 +116,7 @@ add_executable (Day10
 set(DAY11_DIR ${SOURCE_DIR}/day11)
 add_executable (Day11 
   ${DAY11_DIR}/main.cpp
+  ${DAY11_DIR}/position.hpp
   ${DAY11_DIR}/image.cpp ${DAY11_DIR}/image.hpp)
 
 #=============================================================================#
@@ -125,3 +126,14 @@ set(DAY12_DIR ${SOURCE_DIR}/day12)
 add_executable (Day12 
   ${DAY12_DIR}/main.cpp
   ${DAY12_DIR}/condition_record.cpp ${DAY12_DIR}/condition_record.hpp)
+
+#=============================================================================#
+# Day 13                                                                      #
+#=============================================================================#
+set(DAY13_DIR ${SOURCE_DIR}/day13)
+add_executable (Day13 
+  ${DAY13_DIR}/main.cpp
+  ${DAY11_DIR}/position.hpp
+  ${DAY13_DIR}/pattern.cpp ${DAY13_DIR}/pattern.hpp)
+
+target_include_directories(Day13 PRIVATE ${DAY11_DIR})
