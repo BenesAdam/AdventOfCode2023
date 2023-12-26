@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <chrono>
 
 #include "condition_record.hpp"
 
@@ -67,9 +68,6 @@ void cConditionRecord::ParseGroups(const std::string& arg_groupsStr)
 		groups.push_back(group);
 	}
 
-	strongMatchRegex = GenerateMatchRegex(".", "#");
-	weakMatchRegex = GenerateMatchRegex(".\\?", "#\\?");
-
 	if (foldingEnabled)
 	{
 		std::vector<uint16_t> groupsOriginal = groups;
@@ -84,114 +82,95 @@ void cConditionRecord::ParseGroups(const std::string& arg_groupsStr)
 	}
 }
 
-std::regex cConditionRecord::GenerateMatchRegex(const std::string& arg_operational, const std::string& arg_demaged) const
-{
-	std::string operational = "[" + arg_operational + "]";
-	std::string demaged = "[" + arg_demaged + "]";
-
-	std::string match = operational + "*?";
-	for (auto group : groups)
-	{
-		match += demaged + "{" + std::to_string(group) + "}";
-		match += operational + "+";
-	}
-
-	match.pop_back();
-	match += "*";
-
-	if(foldingEnabled)
-	{
-		match = "(?:" + match + "){5}";
-	}
-
-	return std::regex(match);
-}
-
-
-uint64_t cConditionRecord::NumberOfPossibleWayBruteForce(const std::list<cConditionRecord>& arg_records)
+uint64_t cConditionRecord::NumberOfPossibleWay(const std::list<cConditionRecord>& arg_records)
 {
 	uint64_t sum = 0U;
 
+	auto start = std::chrono::high_resolution_clock::now();
+
 	for (auto& record : arg_records)
 	{
-		const uint64_t possibilities = record.NumberOfPossibleWayBruteForce();
+		const uint64_t possibilities = record.NumberOfPossibleWay();
 		sum += possibilities;
 	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	auto runtime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+	std::cout << "(" << runtime.count() << "ms) ";
 
 	return sum;
 }
 
-uint64_t cConditionRecord::NumberOfPossibleWayBruteForce(void) const
+uint64_t cConditionRecord::NumberOfPossibleWay(void) const
 {
-	// Number of question marks
-	uint32_t questionMarks = 0U;
-	for (auto c : record)
-	{
-		if (c == '?')
-		{
-			questionMarks++;
-		}
-	}
-
-	// Start recursion
-	std::string recordCpy = record;
-	return NumberOfPossibleWayBruteForce(recordCpy, questionMarks);
+	std::unordered_map<std::string, uint64_t> cache;
+	return NumberOfPossibleWay(0U, 0U, 0U, cache);
 }
 
-uint64_t cConditionRecord::NumberOfPossibleWayBruteForce(std::string& arg_record, uint32_t arg_questionMarksLeft) const
+uint64_t cConditionRecord::NumberOfPossibleWay(uint16_t arg_recordIndex, uint16_t arg_groupIndex, uint16_t arg_springsConsumed,
+	std::unordered_map<std::string, uint64_t>& arg_cache) const
 {
-	if (!std::regex_match(arg_record, weakMatchRegex))
+	// Check group index
+	const bool allGroupsConsumed = arg_groupIndex == groups.size();
+	const bool lastGroupConsumed = (arg_groupIndex == (groups.size() - 1U)) && (groups[arg_groupIndex] == arg_springsConsumed);
+	if (allGroupsConsumed || lastGroupConsumed)
+	{
+		// Check that all springs was consumed
+		const bool allSpringConsumed = arg_recordIndex == record.size();
+		const bool noSpringsLeft = (record.find("#", arg_recordIndex) == std::string::npos);
+		return (allSpringConsumed || noSpringsLeft) ? 1U : 0U;
+	}
+
+	// Run out of springs and some groups left
+	if (arg_recordIndex == record.size())
 	{
 		return 0U;
 	}
 
-	if (arg_questionMarksLeft == 0U)
+	// Check cache
+	std::string key = std::to_string(arg_recordIndex) + "-" + std::to_string(arg_groupIndex) + "-" + std::to_string(arg_springsConsumed);
+	if (arg_cache.find(key) != arg_cache.end())
 	{
-		return (std::regex_match(arg_record, strongMatchRegex)) ? 1U : 0U;
+		return arg_cache[key];
 	}
 
-	uint64_t sum = 0U;
-	uint32_t questionMarkIndex = arg_record.find('?');
-
-	arg_record[questionMarkIndex] = '#';
-	sum += NumberOfPossibleWayBruteForce(arg_record, arg_questionMarksLeft - 1U);
-
-	arg_record[questionMarkIndex] = '.';
-	sum += NumberOfPossibleWayBruteForce(arg_record, arg_questionMarksLeft - 1U);
-
-	arg_record[questionMarkIndex] = '?';
-	return sum;
-}
-
-bool cConditionRecord::RecordIsValid(const std::string& arg_record) const
-{
-	uint32_t groupIndex = 0U;
+	uint64_t result = 0U;
+	const char currentSpring = record[arg_recordIndex];
+	const bool currentGroupDone = (groups[arg_groupIndex] == arg_springsConsumed) && ((currentSpring == '.') || (currentSpring == '?'));
 	
-	uint32_t workingInRow = 0U;
-	std::string record = arg_record + ".";
-	for (auto c : record)
+	/* Group is fully consumed */
+	if (currentGroupDone)
 	{
-		if ((c == '.') && (workingInRow != 0U))
+		result = NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex + 1U, 0U, arg_cache);
+	}
+	/* First spring in group */
+	else if (arg_springsConsumed == 0U)
+	{
+		/* Consume demaged spring */
+		if (currentSpring == '#')
 		{
-			if (groupIndex >= groups.size())
-			{
-				return false;
-			}
-
-			if (workingInRow != groups[groupIndex])
-			{
-				return false;
-			}
-
-			groupIndex++;
-			workingInRow = 0U;
+			result = NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex, 1U, arg_cache);
 		}
-
-		if (c == '#')
+		/* Consume operational spring */
+		else if (currentSpring == '.')
 		{
-			workingInRow++;
+			result = NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex, 0U, arg_cache);
+		}
+		/* Consume unknown spring */
+		else /* (currentSpring == '?') */
+		{
+			result += NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex, 1U, arg_cache);
+			result += NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex, 0U, arg_cache);
 		}
 	}
+	/* Next spring in group */
+	else if ((currentSpring == '#') || (currentSpring == '?'))
+	{
+			result = NumberOfPossibleWay(arg_recordIndex + 1U, arg_groupIndex, arg_springsConsumed + 1U, arg_cache);
+	}
 
-	return groupIndex == groups.size();
+	// Cache and return result
+	arg_cache[key] = result;
+	return result;
 }
