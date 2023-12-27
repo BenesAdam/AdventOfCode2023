@@ -9,6 +9,7 @@ struct sPosition
 	T j;
 
 	sPosition(void);
+	sPosition(T arg_value);
 	sPosition(T arg_i, T arg_j);
 	sPosition(const sPosition<T>* const arg_original);
 
@@ -22,6 +23,10 @@ struct sPosition
 	sPosition<T>& operator*=(T arg_value);
 	sPosition<T>& operator/=(T arg_value);
 
+	sPosition<T>& operator=(T arg_value);
+	bool operator==(T arg_value);
+	bool operator!=(T arg_value);
+
 	sPosition<T> operator+(const sPosition<T>& arg_other);
 	sPosition<T> operator-(const sPosition<T>& arg_other);
 	sPosition<T> operator*(const sPosition<T>& arg_other);
@@ -32,6 +37,10 @@ struct sPosition
 	sPosition<T>& operator*=(const sPosition<T>& arg_other);
 	sPosition<T>& operator/=(const sPosition<T>& arg_other);
 
+	sPosition<T>& operator=(const sPosition<T>& arg_other);
+	bool operator==(const sPosition<T>& arg_other);
+	bool operator!=(const sPosition<T>& arg_other);
+
 	T ManhattanDistance(const sPosition<T>& arg_other);
 };
 
@@ -41,6 +50,13 @@ template<typename T>
 inline sPosition<T>::sPosition(void) :
 	i(T(0)),
 	j(T(0))
+{
+}
+
+template<typename T>
+inline sPosition<T>::sPosition(T arg_value) :
+	i(arg_value),
+	j(arg_value)
 {
 }
 
@@ -131,6 +147,27 @@ inline sPosition<T>& sPosition<T>::operator/=(T arg_value)
 }
 
 template<typename T>
+inline sPosition<T>& sPosition<T>::operator=(T arg_value)
+{
+	this->i = arg_value;
+	this->j = arg_value;
+
+	return *this;
+}
+
+template<typename T>
+inline bool sPosition<T>::operator==(T arg_value)
+{
+	return (this->i == arg_value) && (this->j == arg_value);
+}
+
+template<typename T>
+inline bool sPosition<T>::operator!=(T arg_value)
+{
+	return !(*this == arg_value);
+}
+
+template<typename T>
 inline sPosition<T> sPosition<T>::operator+(const sPosition& arg_other)
 {
 	sPosition<T> result(this);
@@ -200,6 +237,27 @@ inline sPosition<T>& sPosition<T>::operator/=(const sPosition& arg_other)
 	this->j /= arg_other.j;
 
 	return *this;
+}
+
+template<typename T>
+inline sPosition<T>& sPosition<T>::operator=(const sPosition<T>& arg_other)
+{
+	this->i = arg_other.i;
+	this->j = arg_other.j;
+
+	return *this;
+}
+
+template<typename T>
+inline bool sPosition<T>::operator==(const sPosition<T>& arg_other)
+{
+	return (this->i == arg_other.i) && (this->j == arg_other.j);
+}
+
+template<typename T>
+inline bool sPosition<T>::operator!=(const sPosition<T>& arg_other)
+{
+	return !(*this == arg_other);
 }
 
 template<typename T>
