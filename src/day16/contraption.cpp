@@ -9,7 +9,9 @@ std::set<std::string> cContraption::visit;
 cContraption::cContraption(const std::string& arg_path) :
 	width(0U),
 	height(0U),
-	data()
+	data(),
+	energizedTilesUncontrolled(0U),
+	energizedTilesControlled(0U)
 {
 	std::ifstream file(arg_path);
 
@@ -40,16 +42,43 @@ cContraption::cContraption(const std::string& arg_path) :
 
 	file.close();
 
-	SpreadBeams();
+	FireBeams();
 }
 
-void cContraption::SpreadBeams(void)
+void cContraption::FireBeams(void)
 {
-	visit.clear();
-	const sPosition<int32_t> dimensions(height, width);
+	std::vector<uint16_t> energizedTiles;
+
+	// Fire all beams
+	for (uint16_t i = 0U; i < height; i++)
+	{
+		energizedTiles.push_back(FireBeam({ cCell::eDirection::RIGHT, {i, 0} }));
+		energizedTiles.push_back(FireBeam({ cCell::eDirection::LEFT, {i, width - 1} }));
+	}
+
+	for (uint16_t j = 0U; j < width; j++)
+	{
+		energizedTiles.push_back(FireBeam({ cCell::eDirection::BOTTOM, {0, j} }));
+		energizedTiles.push_back(FireBeam({ cCell::eDirection::UP, {height - 1, j} }));
+	}
+
+	// Process result
+	energizedTilesUncontrolled = energizedTiles[0];
+
+	for (auto energized : energizedTiles)
+	{
+		energizedTilesControlled = std::max(energized, energizedTilesControlled);
+	}
+}
+
+uint16_t cContraption::FireBeam(const cCell::sBeam arg_beam)
+{
+	uint16_t visited = 0U;
 
 	std::stack<cCell::sBeam> beams;
-	beams.push({ cCell::eDirection::RIGHT, {0, 0} });
+	beams.push(arg_beam);
+
+	ResetVisitings();
 
 	while (!beams.empty())
 	{
@@ -61,60 +90,32 @@ void cContraption::SpreadBeams(void)
 		{
 			visit.insert(label);
 			cCell& cell = data[beam.position.i][beam.position.j];
-			cell.ProccessBeam(dimensions, beam, beams);
+			visited += cell.ProccessBeam({ height, width }, beam, beams);
 		}
 	}
+
+	return visited;
 }
 
-uint16_t cContraption::CountEnergizedTiles(void) const
+void cContraption::ResetVisitings(void)
 {
-	uint16_t count = 0U;
+	visit.clear();
 
 	for (uint16_t i = 0U; i < height; i++)
 	{
 		for (uint16_t j = 0U; j < width; j++)
 		{
-			if (data[i][j].IsEnergized())
-			{
-				count++;
-			}
+			data[i][j].ResetVoltageLevel();
 		}
-	}
-
-	return count;
-}
-
-void cContraption::Print(void) const
-{
-	for (uint16_t i = 0U; i < height; i++)
-	{
-		for (uint16_t j = 0U; j < width; j++)
-		{
-			std::cout << data[i][j].GetSymbol();
-		}
-
-		std::cout << std::endl;
 	}
 }
 
-void cContraption::Print(const sPosition<int32_t>& arg_position) const
+uint16_t cContraption::EnergizedTilesUncontrolled(void) const
 {
-	std::cout << " ";
-	for (uint16_t j = 0U; j < width; j++)
-	{
-		std::cout << (arg_position.j == j ? 'v' : ' ');
-	}
-	std::cout << std::endl;
+	return energizedTilesUncontrolled;
+}
 
-	for (uint16_t i = 0U; i < height; i++)
-	{
-		std::cout << (arg_position.i == i ? '>' : ' ');
-
-		for (uint16_t j = 0U; j < width; j++)
-		{
-			std::cout << data[i][j].GetSymbol();
-		}
-
-		std::cout << std::endl;
-	}
+uint16_t cContraption::EnergizedTilesControlled(void) const
+{
+	return energizedTilesControlled;
 }

@@ -71,7 +71,12 @@ bool cCell::IsEnergized(void) const
 	return voltageLevel > 0U;
 }
 
-void cCell::ProccessBeam(const sPosition<int32_t>& arg_dimensions, const cCell::sBeam& arg_beam, std::stack<cCell::sBeam>& arg_beams)
+void cCell::ResetVoltageLevel(void)
+{
+	voltageLevel = 0U;
+}
+
+uint16_t cCell::ProccessBeam(const sPosition<int32_t>& arg_dimensions, const cCell::sBeam& arg_beam, std::stack<cCell::sBeam>& arg_beams)
 {
 	voltageLevel++;
 
@@ -85,4 +90,6 @@ void cCell::ProccessBeam(const sPosition<int32_t>& arg_dimensions, const cCell::
 			arg_beams.push(beam);
 		}
 	}
+
+	return (voltageLevel == 1U) ? 1U : 0U;
 }

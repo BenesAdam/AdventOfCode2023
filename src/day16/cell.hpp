@@ -28,7 +28,8 @@ public:
 
 	char GetSymbol(void) const;
 	bool IsEnergized(void) const;
-	void ProccessBeam(const sPosition<int32_t>& arg_dimensions, const cCell::sBeam& arg_beam, std::stack<cCell::sBeam>& arg_beams);
+	void ResetVoltageLevel(void);
+	uint16_t ProccessBeam(const sPosition<int32_t>& arg_dimensions, const cCell::sBeam& arg_beam, std::stack<cCell::sBeam>& arg_beams);
 	
 	static const sPosition<int32_t> Directions[4U];
 

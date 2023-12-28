@@ -11,17 +11,20 @@ class cContraption
 public:
 	cContraption(const std::string& arg_path);
 
-	uint16_t CountEnergizedTiles(void) const;
-
-	void Print(void) const;
-	void Print(const sPosition<int32_t>& arg_position) const;
+	uint16_t EnergizedTilesUncontrolled(void) const;
+	uint16_t EnergizedTilesControlled(void) const;
 
 private:
-	void SpreadBeams(void);
+	void FireBeams(void);
+	uint16_t FireBeam(const cCell::sBeam arg_beam);
+	void ResetVisitings(void);
 
 	static std::set<std::string> visit;
 
 	uint16_t width;
 	uint16_t height;
 	std::vector<std::vector<cCell>> data;
+
+	uint16_t energizedTilesUncontrolled;
+	uint16_t energizedTilesControlled;
 };
