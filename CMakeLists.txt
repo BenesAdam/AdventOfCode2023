@@ -144,4 +144,7 @@ target_include_directories(Day13 PRIVATE ${DAY11_DIR})
 set(DAY14_DIR ${SOURCE_DIR}/day14)
 add_executable (Day14 
   ${DAY14_DIR}/main.cpp
+  ${DAY11_DIR}/position.hpp
   ${DAY14_DIR}/platform.cpp ${DAY14_DIR}/platform.hpp)
+
+target_include_directories(Day14 PRIVATE ${DAY11_DIR})
