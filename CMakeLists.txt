@@ -148,3 +148,18 @@ add_executable (Day14
   ${DAY14_DIR}/platform.cpp ${DAY14_DIR}/platform.hpp)
 
 target_include_directories(Day14 PRIVATE ${DAY11_DIR})
+
+#=============================================================================#
+# Day 15                                                                      #
+#=============================================================================#
+set(DAY15_DIR ${SOURCE_DIR}/day15)
+add_executable (Day15 
+  ${DAY15_DIR}/main.cpp
+  ${DAY15_DIR}/init_sequence.cpp ${DAY15_DIR}/init_sequence.hpp)
+
+# #=============================================================================#
+# # Day xx                                                                      #
+# #=============================================================================#
+# set(DAYxx_DIR ${SOURCE_DIR}/dayxx)
+# add_executable (Dayxx 
+#   ${DAYxx_DIR}/main.cpp)
