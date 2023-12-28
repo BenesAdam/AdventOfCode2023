@@ -137,3 +137,11 @@ add_executable (Day13
   ${DAY13_DIR}/pattern.cpp ${DAY13_DIR}/pattern.hpp)
 
 target_include_directories(Day13 PRIVATE ${DAY11_DIR})
+
+#=============================================================================#
+# Day 14                                                                      #
+#=============================================================================#
+set(DAY14_DIR ${SOURCE_DIR}/day14)
+add_executable (Day14 
+  ${DAY14_DIR}/main.cpp
+  ${DAY14_DIR}/platform.cpp ${DAY14_DIR}/platform.hpp)
