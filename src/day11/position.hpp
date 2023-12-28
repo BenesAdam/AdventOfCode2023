@@ -27,10 +27,10 @@ struct sPosition
 	bool operator==(T arg_value);
 	bool operator!=(T arg_value);
 
-	sPosition<T> operator+(const sPosition<T>& arg_other);
-	sPosition<T> operator-(const sPosition<T>& arg_other);
-	sPosition<T> operator*(const sPosition<T>& arg_other);
-	sPosition<T> operator/(const sPosition<T>& arg_other);
+	sPosition<T> operator+(const sPosition<T>& arg_other) const;
+	sPosition<T> operator-(const sPosition<T>& arg_other) const;
+	sPosition<T> operator*(const sPosition<T>& arg_other) const;
+	sPosition<T> operator/(const sPosition<T>& arg_other) const;
 
 	sPosition<T>& operator+=(const sPosition<T>& arg_other);
 	sPosition<T>& operator-=(const sPosition<T>& arg_other);
@@ -40,6 +40,9 @@ struct sPosition
 	sPosition<T>& operator=(const sPosition<T>& arg_other);
 	bool operator==(const sPosition<T>& arg_other);
 	bool operator!=(const sPosition<T>& arg_other);
+
+	bool IsInBoundary(const T arg_width, const T arg_height) const;
+	bool IsInBoundary(const sPosition<T>& arg_dimensions) const;
 
 	T ManhattanDistance(const sPosition<T>& arg_other);
 };
@@ -168,38 +171,38 @@ inline bool sPosition<T>::operator!=(T arg_value)
 }
 
 template<typename T>
-inline sPosition<T> sPosition<T>::operator+(const sPosition& arg_other)
+inline sPosition<T> sPosition<T>::operator+(const sPosition& arg_other) const
 {
 	sPosition<T> result(this);
-	result += arg_other.i;
-	result += arg_other.j;
+	result.i += arg_other.i;
+	result.j += arg_other.j;
 	return result;
 }
 
 template<typename T>
-inline sPosition<T> sPosition<T>::operator-(const sPosition& arg_other)
+inline sPosition<T> sPosition<T>::operator-(const sPosition& arg_other) const
 {
 	sPosition<T> result(this);
-	result -= arg_other.i;
-	result -= arg_other.j;
+	result.i -= arg_other.i;
+	result.j -= arg_other.j;
 	return result;
 }
 
 template<typename T>
-inline sPosition<T> sPosition<T>::operator*(const sPosition& arg_other)
+inline sPosition<T> sPosition<T>::operator*(const sPosition& arg_other) const
 {
 	sPosition<T> result(this);
-	result *= arg_other.i;
-	result *= arg_other.j;
+	result.i *= arg_other.i;
+	result.j *= arg_other.j;
 	return result;
 }
 
 template<typename T>
-inline sPosition<T> sPosition<T>::operator/(const sPosition& arg_other)
+inline sPosition<T> sPosition<T>::operator/(const sPosition& arg_other) const
 {
 	sPosition<T> result(this);
-	result /= arg_other.i;
-	result /= arg_other.j;
+	result.i /= arg_other.i;
+	result.j /= arg_other.j;
 	return result;
 }
 
@@ -258,6 +261,18 @@ template<typename T>
 inline bool sPosition<T>::operator!=(const sPosition<T>& arg_other)
 {
 	return !(*this == arg_other);
+}
+
+template<typename T>
+inline bool sPosition<T>::IsInBoundary(const T arg_height, const T arg_width) const
+{
+	return (i >= T(0)) && (i < arg_height) && (j >= T(0)) && (j < arg_width);
+}
+
+template<typename T>
+inline bool sPosition<T>::IsInBoundary(const sPosition<T>& arg_dimensions) const
+{
+	return IsInBoundary(arg_dimensions.i, arg_dimensions.j);
 }
 
 template<typename T>

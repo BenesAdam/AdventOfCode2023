@@ -158,6 +158,17 @@ add_executable (Day15
   ${DAY15_DIR}/init_sequence.cpp ${DAY15_DIR}/init_sequence.hpp
   ${DAY15_DIR}/box.cpp ${DAY15_DIR}/box.hpp)
 
+#=============================================================================#
+# Day 16                                                                      #
+#=============================================================================#
+set(DAY16_DIR ${SOURCE_DIR}/day16)
+add_executable (Day16 
+  ${DAY16_DIR}/main.cpp
+  ${DAY16_DIR}/contraption.cpp ${DAY16_DIR}/contraption.hpp
+  ${DAY16_DIR}/cell.cpp ${DAY16_DIR}/cell.hpp)
+
+target_include_directories(Day16 PRIVATE ${DAY11_DIR})
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#
