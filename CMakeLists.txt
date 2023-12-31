@@ -169,6 +169,17 @@ add_executable (Day16
 
 target_include_directories(Day16 PRIVATE ${DAY11_DIR})
 
+#=============================================================================#
+# Day 17                                                                      #
+#=============================================================================#
+set(DAY17_DIR ${SOURCE_DIR}/day17)
+add_executable (Day17 
+  ${DAY17_DIR}/main.cpp
+  ${DAY17_DIR}/map.cpp ${DAY17_DIR}/map.hpp
+  ${DAY17_DIR}/state.cpp ${DAY17_DIR}/state.hpp)
+
+target_include_directories(Day17 PRIVATE ${DAY11_DIR})
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#

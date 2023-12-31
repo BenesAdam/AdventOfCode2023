@@ -40,6 +40,7 @@ struct sPosition
 	sPosition<T>& operator=(const sPosition<T>& arg_other);
 	bool operator==(const sPosition<T>& arg_other);
 	bool operator!=(const sPosition<T>& arg_other);
+	bool operator<(const sPosition<T>& arg_other) const;
 
 	bool IsInBoundary(const T arg_width, const T arg_height) const;
 	bool IsInBoundary(const sPosition<T>& arg_dimensions) const;
@@ -261,6 +262,23 @@ template<typename T>
 inline bool sPosition<T>::operator!=(const sPosition<T>& arg_other)
 {
 	return !(*this == arg_other);
+}
+
+template<typename T>
+inline bool sPosition<T>::operator<(const sPosition<T>& arg_other) const
+{
+	if (this->i < arg_other.i)
+	{
+		return true;
+	}
+	else if (this->i > arg_other.i)
+	{
+		return false;
+	}
+	else
+	{
+		return this->j < arg_other.j;
+	}
 }
 
 template<typename T>
