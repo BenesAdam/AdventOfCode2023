@@ -180,6 +180,16 @@ add_executable (Day17
 
 target_include_directories(Day17 PRIVATE ${DAY11_DIR})
 
+#=============================================================================#
+# Day 18                                                                      #
+#=============================================================================#
+set(DAY18_DIR ${SOURCE_DIR}/day18)
+add_executable (Day18 
+  ${DAY18_DIR}/main.cpp
+  ${DAY18_DIR}/instruction.cpp ${DAY18_DIR}/instruction.cpp)
+
+target_include_directories(Day18 PRIVATE ${DAY11_DIR})
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#
