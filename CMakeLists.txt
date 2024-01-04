@@ -190,6 +190,16 @@ add_executable (Day18
 
 target_include_directories(Day18 PRIVATE ${DAY11_DIR})
 
+#=============================================================================#
+# Day 19                                                                      #
+#=============================================================================#
+set(DAY19_DIR ${SOURCE_DIR}/day19)
+add_executable (Day19 
+  ${DAY19_DIR}/main.cpp
+  ${DAY19_DIR}/part_sorter.cpp ${DAY19_DIR}/part_sorter.hpp
+  ${DAY19_DIR}/workflow.cpp ${DAY19_DIR}/workflow.hpp
+  ${DAY19_DIR}/part.cpp ${DAY19_DIR}/part.hpp)
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#
