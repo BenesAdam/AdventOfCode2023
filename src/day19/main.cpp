@@ -6,17 +6,9 @@ int main(int argc, char* argv[])
 {
 	//cPartSorter partSorter(SOURCE_DIR"/day19/test1");
 	cPartSorter partSorter(SOURCE_DIR"/day19/input");
-	uint64_t acceptedParts = partSorter.SumOfAccepted();
-	std::cout << "Sum of accepted parts: " << acceptedParts << std::endl;
 
-	if (acceptedParts == 421983)
-	{
-		std::cout << "GOOD" << std::endl;
-	}
-	else
-	{
-		std::cout << "FAIL" << std::endl;
-	}
+	std::cout << "Sum of accepted parts: " << partSorter.SumOfAccepted() << std::endl;
+	std::cout << "Number of combinations: " << partSorter.NumberOfCombinations() << std::endl;
 
 	return 0;
 }

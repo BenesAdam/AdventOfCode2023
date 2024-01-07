@@ -29,4 +29,6 @@ struct sInterval
 
 	sInterval(void);
 	sInterval(const uint16_t arg_minValue, const uint16_t arg_maxValue);
+
+	uint64_t CalculateProduct(void) const;
 };

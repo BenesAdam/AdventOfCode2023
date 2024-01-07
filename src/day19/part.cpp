@@ -64,3 +64,15 @@ sInterval::sInterval(const uint16_t arg_minValue, const uint16_t arg_maxValue) :
 	max(arg_maxValue)
 {
 }
+
+uint64_t sInterval::CalculateProduct(void) const
+{
+	uint64_t product = 1U;
+
+	for (uint8_t category = 0U; category < sPart::CategorySize; category++)
+	{
+  	product *= max.rating[category] - min.rating[category] + 1U;
+	}
+
+	return product;
+}

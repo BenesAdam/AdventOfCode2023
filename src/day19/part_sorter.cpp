@@ -1,16 +1,10 @@
 #include <iostream>
-#include <fstream>
 
 #include "part_sorter.hpp"
 
 cPartSorter::cPartSorter(const std::string& arg_path) :
 	workflows(),
 	parts()
-{
-	ParseInput(arg_path);
-}
-
-void cPartSorter::ParseInput(const std::string& arg_path)
 {
 	std::ifstream file(arg_path);
 
@@ -20,10 +14,18 @@ void cPartSorter::ParseInput(const std::string& arg_path)
 		exit(EXIT_FAILURE);
 	}
 
+	ParseWorkflows(file);
+	ParseParts(file);
+
+	file.close();
+}
+
+void cPartSorter::ParseWorkflows(std::ifstream& arg_file)
+{
 	std::string line;
-	while (!file.eof())
+	while (!arg_file.eof())
 	{
-		std::getline(file, line);
+		std::getline(arg_file, line);
 		if (line == "")
 		{
 			break;
@@ -31,23 +33,19 @@ void cPartSorter::ParseInput(const std::string& arg_path)
 
 		cWorkflow::ParseLine(line, workflows);
 	}
-	cWorkflow::CompleteWorkflows(workflows);
 
-	while (!file.eof())
+	cWorkflow::CompleteWorkflows(workflows);
+}
+
+void cPartSorter::ParseParts(std::ifstream& arg_file)
+{
+	std::string line;
+	while (!arg_file.eof())
 	{
-		std::getline(file, line);
+		std::getline(arg_file, line);
 		sPart part(line);
 		parts.push_back(part);
 	}
-
-	file.close();
-}
-
-bool cPartSorter::IsPartAccepted(sPart& arg_part)
-{
-	cWorkflow* current = &workflows["in"];
-
-	return current->IsAccepted(arg_part);
 }
 
 uint64_t cPartSorter::SumOfAccepted(void)
@@ -63,4 +61,14 @@ uint64_t cPartSorter::SumOfAccepted(void)
 	}
 
 	return sum;
+}
+
+bool cPartSorter::IsPartAccepted(sPart& arg_part)
+{
+	return workflows["in"].IsAccepted(arg_part);
+}
+
+uint64_t cPartSorter::NumberOfCombinations(void)
+{
+	return workflows["in"].IntervalOfAccepted(sInterval());
 }

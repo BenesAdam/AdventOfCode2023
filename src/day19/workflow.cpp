@@ -9,7 +9,7 @@ const std::string cWorkflow::Rejected = "R";
 cWorkflow::cWorkflow(void) :
 	name(""),
 	category(sPart::ExtremelyCoolLooking),
-	compareGreater(true),
+	comparator(LESS),
 	value(0U),
 	positiveStr(""),
 	negativeStr(""),
@@ -26,7 +26,7 @@ cWorkflow::cWorkflow(const std::string& arg_str) :
 	std::regex_search(arg_str, m, regex);
 
 	category = sPart::LetterToCategory(m[1].str()[0]);
-	compareGreater = (m[2] == ">") ? true : false;
+	comparator = (m[2] == '>') ? GREATER : LESS;
 	value = std::stoi(m[3]);
 	positiveStr = m[4];
 }
@@ -38,12 +38,12 @@ void cWorkflow::ParseLine(const std::string& arg_line, std::map<std::string, cWo
 	std::regex parseOutName("(\\w+)\\{([^\\}]*)\\}");
 	std::regex_search(arg_line, m, parseOutName);
 
-	// Get atomic workflows
+	// Get atomic workflows with positive string
 	std::vector<cWorkflow> workflows;
 	std::string defaultCase;
 	ParseRules(m[2], workflows, defaultCase);
 
-	// Assign name and negative
+	// Assign name and negative string
 	for (uint16_t i = 0U; i < workflows.size(); i++)
 	{
 		const std::string newName = (i == 0U) ? m[1] : (m[1].str() + std::to_string(i));
@@ -108,7 +108,7 @@ void cWorkflow::AssignNeighbours(std::map<std::string, cWorkflow>& arg_workflows
 
 bool cWorkflow::IsAccepted(const sPart& arg_part) const
 {
-	const bool positiveBranch = compareGreater ? Greater(arg_part) : Less(arg_part);
+	const bool positiveBranch = (comparator == GREATER) ? Greater(arg_part) : Less(arg_part);
 	cWorkflow* next = positiveBranch ? positive : negative;
 
 	if (next->name == cWorkflow::Accepted)
@@ -123,6 +123,65 @@ bool cWorkflow::IsAccepted(const sPart& arg_part) const
 	{
 		return next->IsAccepted(arg_part);
 	}
+}
+
+uint64_t cWorkflow::IntervalOfAccepted(const sInterval& arg_interval) const
+{
+	if (name == Rejected)
+	{
+		return 0U;
+	}
+
+	if (name == Accepted)
+	{
+		return arg_interval.CalculateProduct();
+	}
+
+	uint64_t result = 0U;
+
+	// Positive branch
+	const sInterval positiveInterval = TrimIntervalPositiveBranch(arg_interval);
+	if (positiveInterval.min.rating[category] <= positiveInterval.max.rating[category])
+	{
+		result += positive->IntervalOfAccepted(positiveInterval);
+	}
+
+	// Negative branch
+	const sInterval negativeInterval = TrimIntervalNegativeBranch(arg_interval);
+	if (negativeInterval.min.rating[category] <= negativeInterval.max.rating[category])
+	{
+		result += negative->IntervalOfAccepted(negativeInterval);
+	}
+
+	return result;
+}
+
+sInterval cWorkflow::TrimIntervalPositiveBranch(sInterval arg_interval) const
+{
+	if (comparator == GREATER)
+	{
+		arg_interval.min.rating[category] = std::max(arg_interval.min.rating[category], static_cast<uint16_t>(value + 1U));
+	}
+	else
+	{
+		arg_interval.max.rating[category] = std::min(arg_interval.max.rating[category], static_cast<uint16_t>(value - 1U));
+	}
+
+	return arg_interval;
+}
+
+sInterval cWorkflow::TrimIntervalNegativeBranch(sInterval arg_interval) const
+{
+	if (comparator == GREATER)
+	{
+		arg_interval.max.rating[category] = std::min(arg_interval.max.rating[category], value);
+	}
+	else
+	{
+		arg_interval.min.rating[category] = std::max(arg_interval.min.rating[category], value);
+	}
+
+	return arg_interval;
 }
 
 bool cWorkflow::Less(const sPart& arg_part) const

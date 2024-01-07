@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 #include <map>
 #include <list>
 
@@ -13,9 +14,12 @@ public:
 	cPartSorter(const std::string& arg_path);
 
 	uint64_t SumOfAccepted(void);
+	uint64_t NumberOfCombinations(void);
 
 private:
-	void ParseInput(const std::string& arg_path);
+	void ParseWorkflows(std::ifstream& arg_file);
+	void ParseParts(std::ifstream& arg_file);
+
 	bool IsPartAccepted(sPart& arg_part);
 
 	std::map<std::string, cWorkflow> workflows;
