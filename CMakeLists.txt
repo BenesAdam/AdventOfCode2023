@@ -200,6 +200,19 @@ add_executable (Day19
   ${DAY19_DIR}/workflow.cpp ${DAY19_DIR}/workflow.hpp
   ${DAY19_DIR}/part.cpp ${DAY19_DIR}/part.hpp)
 
+#=============================================================================#
+# Day 20                                                                      #
+#=============================================================================#
+set(DAY20_DIR ${SOURCE_DIR}/day20)
+add_executable (Day20 
+  ${DAY20_DIR}/main.cpp
+  ${DAY20_DIR}/component.cpp ${DAY20_DIR}/component.hpp
+  ${DAY20_DIR}/flip_flop.cpp ${DAY20_DIR}/flip_flop.hpp
+  ${DAY20_DIR}/conjuction.cpp ${DAY20_DIR}/conjuction.hpp
+  ${DAY20_DIR}/broadcaster.cpp ${DAY20_DIR}/broadcaster.hpp
+  ${DAY20_DIR}/network.cpp ${DAY20_DIR}/network.hpp
+  ${DAY20_DIR}/dummy_component.cpp ${DAY20_DIR}/dummy_component.hpp)
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#
