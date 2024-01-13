@@ -25,3 +25,8 @@ void cFlipFlop::ProcessPulse(std::queue<sPulse>& arg_pulses, const sPulse& arg_p
 		arg_pulses.push(sPulse(state, this, outputNeighbour));
 	}
 }
+
+void cFlipFlop::Reset(void)
+{
+	state = E_LOW;
+}

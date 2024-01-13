@@ -213,6 +213,8 @@ add_executable (Day20
   ${DAY20_DIR}/network.cpp ${DAY20_DIR}/network.hpp
   ${DAY20_DIR}/dummy_component.cpp ${DAY20_DIR}/dummy_component.hpp)
 
+target_include_directories(Day20 PRIVATE ${DAY08_DIR})
+
 # #=============================================================================#
 # # Day xx                                                                      #
 # #=============================================================================#

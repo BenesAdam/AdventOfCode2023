@@ -32,9 +32,13 @@ public:
 
   void Init(std::map<std::string, cComponent*>& arg_components);
   void RegisterInputNeighbour(cComponent* arg_component);
-  virtual void ProcessPulse(std::queue<sPulse>& arg_pulses, const sPulse& arg_pulse) = 0;
+  std::set<cComponent*> GetInputNeighbours(void) const;
+
   void Print(void) const;
   std::string GetName(void) const;
+
+  virtual void ProcessPulse(std::queue<sPulse>& arg_pulses, const sPulse& arg_pulse) = 0;
+  virtual void Reset(void);
 
 protected:
   virtual std::string GetPrefix(void) const = 0;

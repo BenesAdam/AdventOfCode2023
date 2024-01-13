@@ -14,6 +14,14 @@ void cConjunction::RegisterInputNeighbourExtra(cComponent* arg_component)
 	}
 }
 
+void cConjunction::Reset(void)
+{
+	for (auto& state : states)
+	{
+		state.second = E_LOW;
+	}
+}
+
 std::string cConjunction::GetPrefix(void) const
 {
 	return "&";

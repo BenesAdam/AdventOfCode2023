@@ -117,6 +117,15 @@ void cComponent::RegisterInputNeighbour(cComponent* arg_component)
 	RegisterInputNeighbourExtra(arg_component);
 }
 
+std::set<cComponent*> cComponent::GetInputNeighbours(void) const
+{
+	return inputNeighbours;
+}
+
+void cComponent::Reset(void)
+{
+}
+
 void cComponent::Print(void) const
 {
 	// Name
