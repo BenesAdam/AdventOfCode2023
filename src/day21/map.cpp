@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "map.hpp"
+#include "numeric.hpp"
 
 cMap::cMap(const std::string& arg_path) :
 	width(0U),
@@ -27,7 +28,7 @@ cMap::cMap(const std::string& arg_path) :
 		const size_t startJ = line.find(cMap::Start);
 		if (startJ != std::string::npos)
 		{
-			start = { height - 1U, static_cast<uint32_t>(startJ) };
+			start = { static_cast<int64_t>(height - 1U), static_cast<int64_t>(startJ) };
 		}
 	}
 
@@ -36,14 +37,27 @@ cMap::cMap(const std::string& arg_path) :
 	file.close();
 }
 
-uint32_t cMap::GardensWithinReach(const uint32_t arg_steps)
+void cMap::Compute(const uint32_t arg_steps)
 {
-	std::set<sPosition<uint32_t>> positions;
+	std::vector<uint32_t> yValues;
+	uint32_t result;
+
+	std::set<sPosition<int64_t>> positions;
 	positions.insert(start);
 
-	for (uint32_t i = 0U; i < arg_steps; i++)
+	const uint32_t max = 65U + 131U * 2U + 1U;
+	for (uint32_t i = 0U; i < max; i++)
 	{
-		std::set<sPosition<uint32_t>> nextPositions;
+		if ((i % 131U) == 65U)
+		{
+			yValues.push_back(positions.size());
+		}
+		if (i == arg_steps)
+		{
+			result = positions.size();
+		}
+
+		std::set<sPosition<int64_t>> nextPositions;
 		for (auto& position : positions)
 		{
 			StepFromLocation(position, nextPositions);
@@ -52,27 +66,29 @@ uint32_t cMap::GardensWithinReach(const uint32_t arg_steps)
 		positions = nextPositions;
 	}
 
-	return positions.size();
-}
+	// Result part 1
+	std::cout << "Part 1: " << std::to_string(result) << std::endl;
 
-void cMap::Print(std::set<sPosition<uint32_t>>& arg_positions) const
-{
-	for (uint32_t i = 0U; i < height; i++)
+	// Part 2
+	std::cout << "Part 2:" << std::endl;
+	std::cout << "1. Go to: https://www.wolframalpha.com/input?i=quadratic+fit+calculator&assumption=%7B%22F%22%2C+%22QuadraticFitCalculator%22%2C+%22data3x%22%7D+-%3E%22%7B0%2C+1%2C+2%7D%22&assumption=%7B%22F%22%2C+%22QuadraticFitCalculator%22%2C+%22data3y%22%7D+-%3E%22%7B1%2C+1%2C+1%7D%22" << std::endl;
+	std::cout << "2. Paste Y values to text box: {";
+
+	for (uint8_t i = 0U; i < yValues.size(); i++)
 	{
-		for (uint32_t j = 0U; j < width; j++)
-		{
-			const bool positionVisited = (arg_positions.find(sPosition<uint32_t>(i, j)) != arg_positions.end());
-			const char c = positionVisited ? cMap::Visited : data[i][j];
-			std::cout << c;
-		}
-
-		std::cout << std::endl;
+		std::cout << yValues[i] << ((i != yValues.size() - 1U) ? ", " : "");
 	}
+	std::cout << "}" << std::endl;
+
+	std::cout << "3. Click on \"Compute\"" << std::endl;
+	std::cout << "4. Click on equation below \"Least-squares best fit\"" << std::endl;
+	std::cout << "5. Paste this at the end of equation: ,x=" << std::to_string((26501365 - 65) / 131) << std::endl;
+	std::cout << "6. Hit \"Enter\" and see what is in result." << std::endl;
 }
 
-void cMap::StepFromLocation(const sPosition<uint32_t>& arg_position, std::set<sPosition<uint32_t>>& arg_positions)
+void cMap::StepFromLocation(const sPosition<int64_t>& arg_position, std::set<sPosition<int64_t>>& arg_positions)
 {
-	static const std::vector<std::pair<int32_t, int32_t>> offsets =
+	static const std::vector<std::pair<int64_t, int64_t>> offsets =
 	{
 		{-1,  0},
 		{ 0,  1},
@@ -82,13 +98,8 @@ void cMap::StepFromLocation(const sPosition<uint32_t>& arg_position, std::set<sP
 
 	for (auto& offset : offsets)
 	{
-		const sPosition<uint32_t> neighbour(arg_position.i - offset.first, arg_position.j - offset.second);
-		if (!neighbour.IsInBoundary(width, height))
-		{
-			continue;
-		}
-
-		const char c = data[neighbour.i][neighbour.j];
+		const sPosition<int64_t> neighbour(arg_position.i + offset.first, arg_position.j + offset.second);
+		const char c = data[nsNumeric::Modulo(neighbour.i, height)][nsNumeric::Modulo(neighbour.j, width)];
 		if (c == cMap::Rock)
 		{
 			continue;

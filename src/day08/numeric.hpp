@@ -13,6 +13,9 @@ namespace nsNumeric
 	template<typename T>
 	T GreatestCommonDivisor(const T arg_a, const T arg_b);
 
+	template<typename T>
+	T Modulo(const T arg_a, const T arg_b);
+
 	//----------------------------------------------------------------------------
 	// Definitions
 	//----------------------------------------------------------------------------
@@ -29,5 +32,11 @@ namespace nsNumeric
 	T GreatestCommonDivisor(const T arg_a, const T arg_b)
 	{
 		return (arg_b == static_cast<T>(0)) ? arg_a : GreatestCommonDivisor<T>(arg_b, arg_a % arg_b);
+	}
+
+	template<typename T>
+	T Modulo(const T arg_a, const T arg_b)
+	{
+		return (arg_b + (arg_a % arg_b)) % arg_b;
 	}
 }

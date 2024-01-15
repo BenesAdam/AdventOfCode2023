@@ -223,7 +223,7 @@ add_executable (Day21
   ${DAY21_DIR}/main.cpp
   ${DAY21_DIR}/map.cpp ${DAY21_DIR}/map.hpp)
 
-target_include_directories(Day21 PRIVATE ${DAY11_DIR})
+target_include_directories(Day21 PRIVATE ${DAY11_DIR} ${DAY08_DIR})
 
 # #=============================================================================#
 # # Day xx                                                                      #
